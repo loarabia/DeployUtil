@@ -21,6 +21,10 @@ Note:
  target is any device running the Windows Device Portal. This could also be
 	the localhost
 
+All commands have an optional argument, -ip. If the argument is left off, 
+the tool will attempt to connect to localhost. Otherwise, it will connect to 
+the specified IP
+
 
 pair
 ----
@@ -28,8 +32,9 @@ pair
 Authenticates the PC running deployutil with the target device and stores a
 cookie on disk to avoid having to reauthenticate.
 
-Example: 
+Examples: 
 	./deployutil pair -pin 1A2b3c
+	./deployutil pair -pin 1a2B3C -ip 127.0.0.1
 
 The Windows Device Portal requires authentication by default. This is generally
 a good thing(TM) because WDP provides someone with the ability to remotely
@@ -56,6 +61,7 @@ Lists the installed applications as a json object.
 Examples:
 	./deployutil list
 	./deployutil list -pretty
+	./deployutil list -ip 127.0.0.1
 
 The list command returns the list of all installed applications and metadata 
 about them as a string of JSON data. It takes on optional argument -pretty 
@@ -69,6 +75,7 @@ Installs the application and any application dependencies.
 
 Examples:
 	./deployutil install My.appx -depsdir ./MY_APPX_Dependencies/
+	./deployutil install My.appx -depsdir ./MY_APPX_Deps/ -ip 127.0.0.1
 
 
 uninstall
@@ -76,8 +83,9 @@ uninstall
 
 Uninstalls the application.
 
-Example:
+Examples:
 	./deployutil uninstall My.Namespace.App_1.1.0.0_en_us_daf314adf
+	./deployutil uninstall My.ns.App_1.1.0.0_en_us_daf314adf -ip 127.0.0.1
 
 
 launch
@@ -85,8 +93,9 @@ launch
 
 Uninstalls the application.
 
-Example:
+Examples:
 	./deployutil launch My.Namespace.App_1.1.0.0_en_us_daf314adf
+	./deployutil launch My.ns.App_1.1.0.0_en_us_daf314adf -ip 127.0.0.1
 
 
 """
