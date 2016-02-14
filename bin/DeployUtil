@@ -1,0 +1,101 @@
+#!/usr/bin/python3
+
+#This code is licensed under the "New BSD License" see LICENSE.txt
+
+""" CommandLine Tool for using DeployUtil's services.
+
+This module provides a commandline interface for DeployUtil which is a module
+that uses the Windows 10 Windows Device Portal REST APIs to perform common
+developer operations on Universal Windows Applications.
+
+DeployUtil can perform the following commands:
+
+	pair		use a pin to pair a PC to a target 
+	list		list the UWPs installed on the target 
+	install		install a new UWP and its dependencies on the target 
+	uninstall 	uninstall a UWP on a target 
+	launch		launch a UWP on the target
+
+Note: 
+ UWP 	is short hand to refer to a Universal Windows Application.
+ target is any device running the Windows Device Portal. This could also be
+	the localhost
+
+
+pair
+----
+
+Authenticates the PC running deployutil with the target device and stores a
+cookie on disk to avoid having to reauthenticate.
+
+Example: 
+	./deployutil pair -pin 1A2b3c
+
+The Windows Device Portal requires authentication by default. This is generally
+a good thing(TM) because WDP provides someone with the ability to remotely
+shutdown/reboot a device, launch apps on it, stop apps on it, install apps on
+it, or generally be obnoxious. 
+
+It is possible to disable WDP's authenticator but this should only be done in
+trustworthy environments with a minimum of trolls in the surrounding areas.
+ 
+Pairing like you would a Bluetooth device is used by WDP to authenticate. It
+also returns a cookie to ensure future requests don't have to reauthenticate
+for every request.
+
+If you do disable the authenticator, you can ignore this command.
+
+Cookies are stored on disk next to deployutil
+
+
+list
+----
+
+Lists the installed applications as a json object.
+
+Examples:
+	./deployutil list
+	./deployutil list -pretty
+
+The list command returns the list of all installed applications and metadata 
+about them as a string of JSON data. It takes on optional argument -pretty 
+which will pretty print the JSON objects to be more human readable.
+
+
+install
+-------
+
+Installs the application and any application dependencies.
+
+Examples:
+	./deployutil install My.appx -depsdir ./MY_APPX_Dependencies/
+
+
+uninstall
+---------
+
+Uninstalls the application.
+
+Example:
+	./deployutil uninstall My.Namespace.App_1.1.0.0_en_us_daf314adf
+
+
+launch
+------
+
+Uninstalls the application.
+
+Example:
+	./deployutil launch My.Namespace.App_1.1.0.0_en_us_daf314adf
+
+
+"""
+import argparse
+
+def main():
+	pass
+
+if __name__ == '__main__':
+	main()
+
+print(__doc__)
