@@ -5,19 +5,6 @@ import http.cookiejar
 #TODO: give an indicator of success
 #TODO: handle errors a bit better.
 
-class WDPRedirectHandler(urllib.request.HTTPRedirectHandler):
-
-	def http_error_500(self, req, fp, code, msg, hdrs):
-		self.http_error_307(req,fp,code,msg,hdrs)
-
-	def http_error_307(self, req, fp, code, msg, hdrs):
-		print("ERROR3")
-		print(req)
-		print(fp)
-		print(code)
-		print(msg)
-		print(hdrs)
-
 def do_pair(ip, pin, **_args):
 	# IF YOU DON'T DO THIS OVER HTTPS YOU WILL GET 308s to goto HTTPS
 	scheme = 'https://'
@@ -34,11 +21,6 @@ def do_pair(ip, pin, **_args):
 	request = urllib.request.Request(url=request_url, method=verb)
 
 	cookies = urllib.request.HTTPCookieProcessor(http.cookiejar.MozillaCookieJar("deployUtil.cookies"))
-	print(cookies)
-	print(cookies.cookiejar)
 	opener = urllib.request.build_opener(WDPRedirectHandler(), https_handler, cookies)
 	resp = opener.open(request)
-	print(cookies)
-	print(cookies.cookiejar)
 	cookies.cookiejar.save(ignore_discard=True)
-
