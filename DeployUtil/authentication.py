@@ -1,6 +1,6 @@
 import urllib.request
-import ssl
 import http.cookiejar
+import DeployUtil.toolsession as session
 
 #TODO: give an indicator of success
 #TODO: handle errors a bit better.
@@ -14,10 +14,7 @@ def do_pair(ip, pin, **_args):
 
 	request_url = scheme + ip + port + api.format_map({'pin':pin})
 
-	context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-	context.verify_mode = ssl.CERT_NONE
-	https_handler = urllib.request.HTTPSHandler(context=context)
-
+	https_handler = session.create_toolsess_httpsHandler()
 	request = urllib.request.Request(url=request_url, method=verb)
 
 	cookies = urllib.request.HTTPCookieProcessor(http.cookiejar.MozillaCookieJar("deployUtil.cookies"))
