@@ -102,8 +102,25 @@ Examples:
 import argparse
 import strings as k
 
+import sys
+sys.path.append('..')
+
+from DeployUtil.authentication import do_pair, do_list
+
+def dispatch_based_on_args(ns):
+	commands = {
+		'pair':do_pair,
+		'list':do_list
+	}
+
+	commands[ns.cmd]( **(vars(ns)))
+	
+
 def add_common_args(subparser):
-	subparser.add_argument(k.ip.switch, help=k.ip.help)	
+	subparser.add_argument(
+		k.ip.switch,
+		help=k.ip.help,
+		default='127.0.0.1')	
 
 def main():
 	parser = argparse.ArgumentParser(description=k.tool_desc)
@@ -156,7 +173,9 @@ def main():
 		help=k.pfn.help,
 		required=True)
 
-	print(parser.parse_args())
+	namespace = parser.parse_args()
+	print(namespace)
+	dispatch_based_on_args(namespace)
 
 if __name__ == '__main__':
 	main()
