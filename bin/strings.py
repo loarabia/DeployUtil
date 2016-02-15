@@ -39,12 +39,10 @@ pfn = opt(	switch='-pfn',
 
 # launch command and options
 launch = opt(	switch='launch',
-		help='launch command help test test test')
+		help='launch command help ')
 
 tool_desc = \
 """ Provides command line access to developer features exposed by the Windows
 Device Portal including, pairing with devices, managing applications, and
 managing processes on devices.
 """ 
-
-subcmd_help = """subcommand help """

@@ -107,10 +107,12 @@ def add_common_args(subparser):
 
 def main():
 	parser = argparse.ArgumentParser(description=k.tool_desc)
-	subparsers = parser.add_subparsers(help=k.subcmd_help)
+	subparsers = parser.add_subparsers(dest='cmd')
 	
 	# pair command
-	pair_parser = subparsers.add_parser(k.pair.switch, help=k.pair.help)
+	pair_parser = subparsers.add_parser(
+		k.pair.switch,
+		help=k.pair.help)
 	add_common_args(pair_parser)
 	pair_parser.add_argument(
 		k.pin.switch,
@@ -154,9 +156,7 @@ def main():
 		help=k.pfn.help,
 		required=True)
 
-	parser.parse_args()
+	print(parser.parse_args())
 
 if __name__ == '__main__':
 	main()
-
-#print(__doc__)
