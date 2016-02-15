@@ -3,7 +3,7 @@ import http.cookiejar
 import DeployUtil.toolsession as session
 import json
 
-def do_list(ip, pretty, **_args):
+def do_list(ip, **_args):
 	scheme = 'https://'
 	port = ''
 	api = '/api/app/packagemanager/packages?'

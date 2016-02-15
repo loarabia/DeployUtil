@@ -99,6 +99,8 @@ Examples:
 
 
 """
+
+#TODO make pretty a flag and store a boolean. It shouldn't be and argument
 import argparse
 import strings as k
 
@@ -108,10 +110,20 @@ sys.path.append('..')
 from DeployUtil.authentication import do_pair
 from DeployUtil.applications import do_list
 
+import json
+
+
+def handle_list_command(ip, pretty, **_args):
+	json_object = do_list(ip)
+	if(pretty):
+		print(json.dumps(json_object, indent=4))
+	else:
+		print(json_object)
+
 def dispatch_based_on_args(ns):
 	commands = {
 		'pair':do_pair,
-		'list':do_list
+		'list':handle_list_command
 	}
 
 	commands[ns.cmd]( **(vars(ns)))
