@@ -105,7 +105,8 @@ import strings as k
 import sys
 sys.path.append('..')
 
-from DeployUtil.authentication import do_pair, do_list
+from DeployUtil.authentication import do_pair
+from DeployUtil.applications import do_list
 
 def dispatch_based_on_args(ns):
 	commands = {
