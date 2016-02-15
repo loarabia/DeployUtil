@@ -74,8 +74,8 @@ install
 Installs the application and any application dependencies.
 
 Examples:
-	./deployutil install My.appx -depsdir ./MY_APPX_Dependencies/
-	./deployutil install My.appx -depsdir ./MY_APPX_Deps/ -ip 127.0.0.1
+	./deployutil install My.appx --depsdir ./MY_APPX_Dependencies/
+	./deployutil install My.appx --depsdir ./MY_APPX_Deps/ -ip 127.0.0.1
 
 
 uninstall
@@ -100,11 +100,63 @@ Examples:
 
 """
 import argparse
+import strings as k
+
+def add_common_args(subparser):
+	subparser.add_argument(k.ip.switch, help=k.ip.help)	
 
 def main():
-	pass
+	parser = argparse.ArgumentParser(description=k.tool_desc)
+	subparsers = parser.add_subparsers(help=k.subcmd_help)
+	
+	# pair command
+	pair_parser = subparsers.add_parser(k.pair.switch, help=k.pair.help)
+	add_common_args(pair_parser)
+	pair_parser.add_argument(
+		k.pin.switch,
+		help=k.pin.help,
+		required=True)
+
+	# list command
+	list_parser = subparsers.add_parser(k.list.switch, help=k.list.help)
+	add_common_args(list_parser)
+	list_parser.add_argument(
+		k.pretty.switch,
+		help=k.pretty.help)
+
+	# install command
+	install_parser = subparsers.add_parser(k.inst.switch, help=k.inst.help)
+	add_common_args(install_parser)
+	install_parser.add_argument(
+		k.appx.switch,
+		help=k.appx.help)
+	install_parser.add_argument(
+		k.deps.switch,
+		help=k.deps.help)
+
+	# uninstall command
+	uninst_parser = subparsers.add_parser(
+		k.uninst.switch,
+		help=k.uninst.help)
+	add_common_args(uninst_parser)
+	uninst_parser.add_argument(
+		k.pfn.switch,
+		help=k.pfn.help,
+		required=True)
+
+	# launch command
+	launch_parser = subparsers.add_parser(
+		k.launch.switch,
+		help=k.launch.help)
+	add_common_args(launch_parser)
+	launch_parser.add_argument(
+		k.pfn.switch,
+		help=k.pfn.help,
+		required=True)
+
+	parser.parse_args()
 
 if __name__ == '__main__':
 	main()
 
-print(__doc__)
+#print(__doc__)
