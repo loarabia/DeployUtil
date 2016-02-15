@@ -21,6 +21,6 @@ def do_pair(ip, pin, **_args):
 	request = urllib.request.Request(url=request_url, method=verb)
 
 	cookies = urllib.request.HTTPCookieProcessor(http.cookiejar.MozillaCookieJar("deployUtil.cookies"))
-	opener = urllib.request.build_opener(WDPRedirectHandler(), https_handler, cookies)
+	opener = urllib.request.build_opener(https_handler, cookies)
 	resp = opener.open(request)
 	cookies.cookiejar.save(ignore_discard=True)
