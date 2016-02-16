@@ -3,6 +3,9 @@ import json
 
 #TODO: give an indicator of success
 #TODO: handle errors a bit better.
+#TODO: I think I can simplify the API string and pass key value pairs
+#	as a dict to the requests module and it will handle turning
+#	those into query strings for me
 
 def do_pair(ip, pin, **_args):
 	# IF YOU DON'T DO THIS OVER HTTPS YOU WILL GET 308s to goto HTTPS
