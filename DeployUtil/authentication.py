@@ -1,23 +1,23 @@
-import urllib.request
-import http.cookiejar
-import DeployUtil.toolsession as session
+import requests
+import json
 
 #TODO: give an indicator of success
 #TODO: handle errors a bit better.
 
 def do_pair(ip, pin, **_args):
 	# IF YOU DON'T DO THIS OVER HTTPS YOU WILL GET 308s to goto HTTPS
+	# But we cannot verify our HTTPS cert yet because we cannot get it off
+	# of all devices.
+	# If the tooling gets smarter about what its talking to, then we can
+	# make an educated choice.
 	scheme = 'https://'
 	port = ''
 	api = '/api/authorize/pair?pin={pin}&persistent=0'
-	verb = 'POST'
-
 	request_url = scheme + ip + port + api.format_map({'pin':pin})
 
-	https_handler = session.create_toolsess_httpsHandler()
-	request = urllib.request.Request(url=request_url, method=verb)
-
-	cookies = urllib.request.HTTPCookieProcessor(http.cookiejar.MozillaCookieJar("deployUtil.cookies"))
-	opener = urllib.request.build_opener(https_handler, cookies)
-	resp = opener.open(request)
-	cookies.cookiejar.save(ignore_discard=True)
+	with requests.Session() as session:
+		response = session.post(request_url, verify=False)
+		cookie_filename = 'deployUtil.cookies'
+		cookies = requests.utils.dict_from_cookiejar(response.cookies)
+		with open(cookie_filename,'w') as cookie_file:
+			json.dump(cookies, cookie_file)
