@@ -108,7 +108,7 @@ import sys
 sys.path.append('..')
 
 from DeployUtil.authentication import do_pair
-from DeployUtil.applications import do_list
+from DeployUtil.applications import do_list, do_install
 
 import json
 
@@ -123,7 +123,8 @@ def handle_list_command(ip, pretty, **_args):
 def dispatch_based_on_args(ns):
 	commands = {
 		'pair':do_pair,
-		'list':handle_list_command
+		'list':handle_list_command,
+		'install':do_install
 	}
 
 	commands[ns.cmd]( **(vars(ns)))
