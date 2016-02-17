@@ -108,7 +108,7 @@ import sys
 sys.path.append('..')
 
 from DeployUtil.authentication import do_pair
-from DeployUtil.applications import do_list, do_install
+from DeployUtil.applications import do_list, do_install, do_launch
 
 import json
 
@@ -124,7 +124,8 @@ def dispatch_based_on_args(ns):
 	commands = {
 		'pair':do_pair,
 		'list':handle_list_command,
-		'install':do_install
+		'install':do_install,
+		'launch':do_launch
 	}
 
 	commands[ns.cmd]( **(vars(ns)))
@@ -185,6 +186,10 @@ def main():
 	launch_parser.add_argument(
 		k.pfn.switch,
 		help=k.pfn.help,
+		required=True)
+	launch_parser.add_argument(
+		k.prid.switch,
+		help=k.prid.help,
 		required=True)
 
 	namespace = parser.parse_args()

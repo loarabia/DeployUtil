@@ -37,6 +37,9 @@ uninst = opt(	switch='uninstall',
 pfn = opt(	switch='-pfn',
 		help='package full name arg help')
 
+prid = opt(	switch='-prid',
+		help='package relateve id help')
+
 # launch command and options
 launch = opt(	switch='launch',
 		help='launch command help ')

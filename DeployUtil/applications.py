@@ -2,6 +2,7 @@ import json
 import requests
 import pathlib
 import os.path
+import base64
 
 #TODO What happens if I don't have a cookie? There are a few possibilities.
 #	1. Authentication is turned off and then probably I don't care
@@ -29,7 +30,7 @@ def do_list(ip, **_args):
 #TODO add state queries to determine if the command is done. Not sure yet if
 #	here or in the commandline tool.
 #TODO add the ability to search through the dependencies dir more thoroughly
-#TODO add a good responk
+#TODO add a good response
 def do_install(ip, appx, depsdir, **_args):
 	scheme = 'https://'
 	port = ''
@@ -67,3 +68,22 @@ def do_install(ip, appx, depsdir, **_args):
 						cookies=cookies,
 						params=params,
 						files=files)
+
+def do_launch(ip, pfn, prid, **_args):
+	scheme = 'https://'
+	port = ''
+	api = '/api/taskmanager/app?'
+	request_url = scheme + ip + port + api
+
+	with requests.Session() as session:
+		cookie_filename = 'deployUtil.cookies'
+		with open(cookie_filename,'r') as cookie_file:
+			cookies = json.load(cookie_file)
+			params = {
+				'appid':base64.encodestring(bytes(prid, "utf-8")),
+				'package':base64.encodestring(bytes(pfn, "utf-8"))
+				}
+			response = session.post(request_url,
+						verify=False,
+						cookies=cookies,
+						params=params)
