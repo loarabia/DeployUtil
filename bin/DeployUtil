@@ -108,7 +108,7 @@ import sys
 sys.path.append('..')
 
 from DeployUtil.authentication import do_pair
-from DeployUtil.applications import do_list, do_install, do_launch
+from DeployUtil.applications import do_list, do_install, do_launch, do_uninstall
 
 import json
 
@@ -125,7 +125,8 @@ def dispatch_based_on_args(ns):
 		'pair':do_pair,
 		'list':handle_list_command,
 		'install':do_install,
-		'launch':do_launch
+		'launch':do_launch,
+		'uninstall':do_uninstall
 	}
 
 	commands[ns.cmd]( **(vars(ns)))

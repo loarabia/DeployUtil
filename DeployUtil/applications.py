@@ -87,3 +87,21 @@ def do_launch(ip, pfn, prid, **_args):
 						verify=False,
 						cookies=cookies,
 						params=params)
+
+def do_uninstall(ip, pfn, **_args):
+	scheme = 'https://'
+	port = ''
+	api = '/api/app/packagemanager/package?'
+	request_url = scheme + ip + port + api
+
+	with requests.Session() as session:
+		cookie_filename = 'deployUtil.cookies'
+		with open(cookie_filename,'r') as cookie_file:
+			cookies = json.load(cookie_file)
+			params = {
+				'package':pfn
+				}
+			response = session.delete(request_url,
+						verify=False,
+						cookies=cookies,
+						params=params)
