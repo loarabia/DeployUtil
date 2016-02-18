@@ -100,7 +100,6 @@ Examples:
 
 """
 
-#TODO make pretty a flag and store a boolean. It shouldn't be and argument
 import argparse
 import json
 import sys
@@ -114,16 +113,16 @@ from DeployUtil.applications import do_list, do_install, do_launch, do_uninstall
 
 
 
-def handle_list_command(ip_addr, pretty, **_):
+def handle_list_command(ip_address, pretty, **_):
     """Executes the libraries list command and provides options for disaplying
     the output.
 
     Arguments:
-        ip_addr: The IP address of the device you're targeting without the port
-                 or the protocol. e.g. 127.0.0.1
+        ip_address: The IP address of the device you're targeting without the
+                 port or the protocol. e.g. 127.0.0.1
          pretty: indicates whether or not to pretty print the resulting JSON
     """
-    json_object = do_list(ip_addr)
+    json_object = do_list(ip_address)
     if pretty:
         print(json.dumps(json_object, indent=4))
     else:
@@ -157,7 +156,8 @@ def add_common_args(subparser):
     subparser.add_argument(
         k.ip.switch,
         help=k.ip.help,
-        default='127.0.0.1')
+        default='127.0.0.1',
+        dest='ip_address')
 
 def main():
     """MAIN function of the tool. builds the argument parsers, parses the args,
@@ -181,7 +181,8 @@ def main():
     add_common_args(list_parser)
     list_parser.add_argument(
         k.pretty.switch,
-        help=k.pretty.help)
+        help=k.pretty.help,
+        action='store_true')
 
     # install command
     install_parser = subparsers.add_parser(k.inst.switch, help=k.inst.help)
