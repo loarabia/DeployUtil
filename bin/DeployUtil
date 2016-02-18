@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-#This code is licensed under the "New BSD License" see LICENSE.txt
+#This code is licensed under the "MIT License" see LICENSE.txt
 
 """ CommandLine Tool for using DeployUtil's services.
 
@@ -10,19 +10,19 @@ developer operations on Universal Windows Applications.
 
 DeployUtil can perform the following commands:
 
-	pair		use a pin to pair a PC to a target 
-	list		list the UWPs installed on the target 
-	install		install a new UWP and its dependencies on the target 
-	uninstall 	uninstall a UWP on a target 
-	launch		launch a UWP on the target
+        pair            use a pin to pair a PC to a target
+        list            list the UWPs installed on the target
+        install         install a new UWP and its dependencies on the target
+        uninstall       uninstall a UWP on a target
+        launch          launch a UWP on the target
 
-Note: 
- UWP 	is short hand to refer to a Universal Windows Application.
+Note:
+ UWP    is short hand to refer to a Universal Windows Application.
  target is any device running the Windows Device Portal. This could also be
-	the localhost
+        the localhost
 
-All commands have an optional argument, -ip. If the argument is left off, 
-the tool will attempt to connect to localhost. Otherwise, it will connect to 
+All commands have an optional argument, -ip. If the argument is left off,
+the tool will attempt to connect to localhost. Otherwise, it will connect to
 the specified IP
 
 
@@ -32,18 +32,18 @@ pair
 Authenticates the PC running deployutil with the target device and stores a
 cookie on disk to avoid having to reauthenticate.
 
-Examples: 
-	./deployutil pair -pin 1A2b3c
-	./deployutil pair -pin 1a2B3C -ip 127.0.0.1
+Examples:
+        ./deployutil pair -pin 1A2b3c
+        ./deployutil pair -pin 1a2B3C -ip 127.0.0.1
 
 The Windows Device Portal requires authentication by default. This is generally
 a good thing(TM) because WDP provides someone with the ability to remotely
 shutdown/reboot a device, launch apps on it, stop apps on it, install apps on
-it, or generally be obnoxious. 
+it, or generally be obnoxious.
 
 It is possible to disable WDP's authenticator but this should only be done in
 trustworthy environments with a minimum of trolls in the surrounding areas.
- 
+
 Pairing like you would a Bluetooth device is used by WDP to authenticate. It
 also returns a cookie to ensure future requests don't have to reauthenticate
 for every request.
@@ -59,12 +59,12 @@ list
 Lists the installed applications as a json object.
 
 Examples:
-	./deployutil list
-	./deployutil list -pretty
-	./deployutil list -ip 127.0.0.1
+        ./deployutil list
+        ./deployutil list -pretty
+        ./deployutil list -ip 127.0.0.1
 
-The list command returns the list of all installed applications and metadata 
-about them as a string of JSON data. It takes on optional argument -pretty 
+The list command returns the list of all installed applications and metadata
+about them as a string of JSON data. It takes on optional argument -pretty
 which will pretty print the JSON objects to be more human readable.
 
 
@@ -74,8 +74,8 @@ install
 Installs the application and any application dependencies.
 
 Examples:
-	./deployutil install My.appx --depsdir ./MY_APPX_Dependencies/
-	./deployutil install My.appx --depsdir ./MY_APPX_Deps/ -ip 127.0.0.1
+        ./deployutil install My.appx --depsdir ./MY_APPX_Dependencies/
+        ./deployutil install My.appx --depsdir ./MY_APPX_Deps/ -ip 127.0.0.1
 
 
 uninstall
@@ -84,8 +84,8 @@ uninstall
 Uninstalls the application.
 
 Examples:
-	./deployutil uninstall My.Namespace.App_1.1.0.0_en_us_daf314adf
-	./deployutil uninstall My.ns.App_1.1.0.0_en_us_daf314adf -ip 127.0.0.1
+        ./deployutil uninstall My.Namespace.App_1.1.0.0_en_us_daf314adf
+        ./deployutil uninstall My.ns.App_1.1.0.0_en_us_daf314adf -ip 127.0.0.1
 
 
 launch
@@ -94,108 +94,132 @@ launch
 Uninstalls the application.
 
 Examples:
-	./deployutil launch My.Namespace.App_1.1.0.0_en_us_daf314adf
-	./deployutil launch My.ns.App_1.1.0.0_en_us_daf314adf -ip 127.0.0.1
+        ./deployutil launch My.Namespace.App_1.1.0.0_en_us_daf314adf
+        ./deployutil launch My.ns.App_1.1.0.0_en_us_daf314adf -ip 127.0.0.1
 
 
 """
 
 #TODO make pretty a flag and store a boolean. It shouldn't be and argument
 import argparse
-import strings as k
-
+import json
 import sys
+
 sys.path.append('..')
+
+import strings as k
 
 from DeployUtil.authentication import do_pair
 from DeployUtil.applications import do_list, do_install, do_launch, do_uninstall
 
-import json
 
 
-def handle_list_command(ip, pretty, **_args):
-	json_object = do_list(ip)
-	if(pretty):
-		print(json.dumps(json_object, indent=4))
-	else:
-		print(json_object)
+def handle_list_command(ip_addr, pretty, **_):
+    """Executes the libraries list command and provides options for disaplying
+    the output.
 
-def dispatch_based_on_args(ns):
-	commands = {
-		'pair':do_pair,
-		'list':handle_list_command,
-		'install':do_install,
-		'launch':do_launch,
-		'uninstall':do_uninstall
-	}
+    Arguments:
+        ip_addr: The IP address of the device you're targeting without the port
+                 or the protocol. e.g. 127.0.0.1
+         pretty: indicates whether or not to pretty print the resulting JSON
+    """
+    json_object = do_list(ip_addr)
+    if pretty:
+        print(json.dumps(json_object, indent=4))
+    else:
+        print(json_object)
 
-	commands[ns.cmd]( **(vars(ns)))
-	
+def dispatch_based_on_args(namespace):
+    """Looks up and executes the right library call for the command requested
+       by the end user.
+
+    Arguments:
+        namespace: a namespace object as returned by argparse.parse_args
+    """
+    commands = {
+        'pair':do_pair,
+        'list':handle_list_command,
+        'install':do_install,
+        'launch':do_launch,
+        'uninstall':do_uninstall
+        }
+
+    commands[namespace.cmd](**(vars(namespace)))
+
 
 def add_common_args(subparser):
-	subparser.add_argument(
-		k.ip.switch,
-		help=k.ip.help,
-		default='127.0.0.1')	
+    """Adds arguments which are common to any argument parser or subparser.
+    Currently, this adds the ip command which allows you to pass an IP address.
+
+    Arguments:
+        subparser: an argparse.parser object to add commands too.
+    """
+    subparser.add_argument(
+        k.ip.switch,
+        help=k.ip.help,
+        default='127.0.0.1')
 
 def main():
-	parser = argparse.ArgumentParser(description=k.tool_desc)
-	subparsers = parser.add_subparsers(dest='cmd')
-	
-	# pair command
-	pair_parser = subparsers.add_parser(
-		k.pair.switch,
-		help=k.pair.help)
-	add_common_args(pair_parser)
-	pair_parser.add_argument(
-		k.pin.switch,
-		help=k.pin.help,
-		required=True)
+    """MAIN function of the tool. builds the argument parsers, parses the args,
+    and then asks dispatch_based_on_args to execute the right command
+    """
+    parser = argparse.ArgumentParser(description=k.tool_desc)
+    subparsers = parser.add_subparsers(dest='cmd')
 
-	# list command
-	list_parser = subparsers.add_parser(k.list.switch, help=k.list.help)
-	add_common_args(list_parser)
-	list_parser.add_argument(
-		k.pretty.switch,
-		help=k.pretty.help)
+    # pair command
+    pair_parser = subparsers.add_parser(
+        k.pair.switch,
+        help=k.pair.help)
+    add_common_args(pair_parser)
+    pair_parser.add_argument(
+        k.pin.switch,
+        help=k.pin.help,
+        required=True)
 
-	# install command
-	install_parser = subparsers.add_parser(k.inst.switch, help=k.inst.help)
-	add_common_args(install_parser)
-	install_parser.add_argument(
-		k.appx.switch,
-		help=k.appx.help)
-	install_parser.add_argument(
-		k.deps.switch,
-		help=k.deps.help)
+    # list command
+    list_parser = subparsers.add_parser(k.list.switch, help=k.list.help)
+    add_common_args(list_parser)
+    list_parser.add_argument(
+        k.pretty.switch,
+        help=k.pretty.help)
 
-	# uninstall command
-	uninst_parser = subparsers.add_parser(
-		k.uninst.switch,
-		help=k.uninst.help)
-	add_common_args(uninst_parser)
-	uninst_parser.add_argument(
-		k.pfn.switch,
-		help=k.pfn.help,
-		required=True)
+    # install command
+    install_parser = subparsers.add_parser(k.inst.switch, help=k.inst.help)
+    add_common_args(install_parser)
+    install_parser.add_argument(
+        k.appx.switch,
+        help=k.appx.help)
+    install_parser.add_argument(
+        k.deps.switch,
+        help=k.deps.help)
 
-	# launch command
-	launch_parser = subparsers.add_parser(
-		k.launch.switch,
-		help=k.launch.help)
-	add_common_args(launch_parser)
-	launch_parser.add_argument(
-		k.pfn.switch,
-		help=k.pfn.help,
-		required=True)
-	launch_parser.add_argument(
-		k.prid.switch,
-		help=k.prid.help,
-		required=True)
+    # uninstall command
+    uninst_parser = subparsers.add_parser(
+        k.uninst.switch,
+        help=k.uninst.help)
+    add_common_args(uninst_parser)
+    uninst_parser.add_argument(
+        k.pfn.switch,
+        help=k.pfn.help,
+        required=True)
 
-	namespace = parser.parse_args()
-	print(namespace)
-	dispatch_based_on_args(namespace)
+    # launch command
+    launch_parser = subparsers.add_parser(
+        k.launch.switch,
+        help=k.launch.help)
+    add_common_args(launch_parser)
+    launch_parser.add_argument(
+        k.pfn.switch,
+        help=k.pfn.help,
+        required=True)
+    launch_parser.add_argument(
+        k.prid.switch,
+        help=k.prid.help,
+        required=True)
+
+    namespace = parser.parse_args()
+    print(namespace)
+    dispatch_based_on_args(namespace)
 
 if __name__ == '__main__':
-	main()
+    main()
