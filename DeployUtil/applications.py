@@ -11,6 +11,9 @@ import base64
 #		a cookie if they can
 #	4. There was some error in the session (network timeout, file read
 #		failure, etc.) Let the user know and exit.
+#TODO refactor mime checking into a utility to make it easier to modify
+#TODO take the need to authenticate error handling code and apply it to all
+#	commands.
 def do_list(ip, **_args):
 	scheme = 'https://'
 	port = ''
@@ -24,6 +27,15 @@ def do_list(ip, **_args):
 			response = session.get(	request_url,
 						verify=False,
 						cookies=cookies)
+			# Error Handling
+			if response.status_code == requests.codes.ok:
+				# Need to Authenticate
+				if response.headers['Content-Type'] == 'text/html':
+					print("You may need to authenticate with the server")
+				# Still on the golden path
+				elif response.headers['Content-Type'] == 'application/json':
+					pass
+
 			json_obj = json.loads(response.text)
 			return json_obj
 
