@@ -219,8 +219,12 @@ def main():
         required=True)
 
     namespace = parser.parse_args()
-    print(namespace)
-    dispatch_based_on_args(namespace)
+
+    if namespace.cmd is None:
+        parser.print_help()
+    else:
+        print(namespace)
+        dispatch_based_on_args(namespace)
 
 if __name__ == '__main__':
     main()
